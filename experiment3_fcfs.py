@@ -1,33 +1,40 @@
-def fcfs_non_preemptive(processes):
-    n = len(processes)
-    proc = sorted(processes, key=lambda x: x['arrival'])
+# # FCFS Scheduling - Simple Python Code
 
-    wait_time = [0]*n
-    turnaroundtime = [0]*n
-    completiontime = [0]*n
-    responsetime = [0]*n
+# # List of processes with their burst times
+# processes = [1, 2, 3]
+# burst_time = [5, 9, 6]
 
-    completiontime[0] = proc[0]['arrival'] + proc[0]['burst']
-    turnaroundtime[0] = completiontime[0] - proc[0]['arrival']
-    wait_time[0] = turnaroundtime[0] - proc[0]['burst']
-    responsetime[0] = wait_time[0]
+# n = len(processes)
+# waiting_time = [0] * n
+# turnaround_time = [0] * n
 
-    for i in range(1, n):
-        execution_time = max(proc[i]['arrival'], completiontime[i-1])
-        completiontime[i] = execution_time + proc[i]['burst']
-        turnaroundtime[i] = completiontime[i] - proc[i]['arrival']
-        wait_time[i] = turnaroundtime[i] - proc[i]['burst']
-        responsetime[i] = wait_time[i]
+# # Calculate waiting time
+# for i in range(1, n):
+#     waiting_time[i] = waiting_time[i - 1] + burst_time[i - 1]
 
-    print("\nAvg Waiting Time is: ", sum(wait_time) / n)
-    print("\nAvg Turnaround is: ", sum(turnaroundtime) / n)
-    print("Avg Response Time is: ", sum(responsetime) / n)
+# # Calculate turnaround time
+# for i in range(n):
+#     turnaround_time[i] = waiting_time[i] + burst_time[i]
 
-processes = [{"arrival": 0, "burst": 2},
-             {"arrival": 1, "burst": 4},
-             {"arrival": 2, "burst": 8},
-             {"arrival": 3, "burst": 1},
-             {"arrival": 4, "burst": 3},
-             {"arrival": 5, "burst": 5}]
+# # Print results
+# print("Process\tBT\tWT\tTAT")
+# for i in range(n):
+#     print(f"P{processes[i]}\t{burst_time[i]}\t{waiting_time[i]}\t{turnaround_time[i]}")
 
-fcfs_non_preemptive(processes)
+
+processs = [1,2,3]
+burst_time = [5,9,6]
+
+n = len(processs)
+waiting_time = [0]*n
+turnaround_time = [0]*n
+
+for i in range(1,n):
+    waiting_time[i] = waiting_time[i-1] + burst_time[i-1]
+
+for i in range(n):
+    turnaround_time[i] = waiting_time[i] + burst_time[i]
+
+print("Process\tBT\tWT\tTAT")
+for i in range(n):
+    print(f"P{processs[i]}\t{burst_time[i]}\t{waiting_time[i]}\t{turnaround_time[i]}")

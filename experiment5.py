@@ -1,54 +1,40 @@
-def is_safe(processes, avail, max_need, allot):
-    n = len(processes)
-    m = len(avail)
-    
-    need = [[0] * m for _ in range(n)]
+# Banker's Algorithm - Deadlock Avoidance (Short Version)
+
+n = 3  # Number of processes
+m = 3  # Number of resources
+
+# Example data
+alloc = [[0, 1, 0], 
+         [2, 0, 0], 
+         [3, 0, 2]]
+
+max_need = [[7, 5, 3], 
+            [3, 2, 2], 
+            [9, 0, 2]]
+
+avail = [3, 3, 2]
+
+# Calculate need matrix
+need = [[max_need[i][j] - alloc[i][j]for j in range(m)]for i in range(n)]
+
+finish = [False] * n
+safe_seq = []
+
+while len(safe_seq) < n:
+    found = False
     for i in range(n):
-        for j in range(m):
-            need[i][j] = max_need[i][j] - allot[i][j]
-    
-    finish = [False] * n
-    safe_seq = []
-    work = avail.copy()
+        if not finish[i] and all(need[i][j] <= avail[j] for j in range(m)):
+            for j in range(m):
+                avail[j] += alloc[i][j]
+            finish[i] = True
+            safe_seq.append(i)
+            found = True
+            break
+    if not found:
+        break
 
-    while len(safe_seq) < n:
-        found = False
-        for i in range(n):
-            if not finish[i]:
-                if all(need[i][j] <= work[j] for j in range(m)):
-                    for j in range(m):
-                        work[j] += allot[i][j]
-                    safe_seq.append(processes[i])
-                    finish[i] = True
-                    found = True
-        if not found:
-            return False, []
-    
-    return True, safe_seq
-
-n = int(input("Enter number of processes: "))
-m = int(input("Enter number of resource types: "))
-
-processes = list(range(n))
-
-available = list(map(int, input(f"Enter available resources ({m} values): ").split()))
-
-print("Enter maximum resources needed for each process:")
-maximum_need = []
-for i in range(n):
-    max_row = list(map(int, input(f"Process {i}: ").split()))
-    maximum_need.append(max_row)
-
-print("Enter allocated resources for each process:")
-allocation = []
-for i in range(n):
-    alloc_row = list(map(int, input(f"Process {i}: ").split()))
-    allocation.append(alloc_row)
-
-safe, sequence = is_safe(processes, available, maximum_need, allocation)
-
-if safe:
-    print("\nSystem is in a SAFE state.")
-    print("Safe sequence:", ' -> '.join(f"P{p}" for p in sequence))
+if len(safe_seq) == n:
+    print("System is in a safe state.")
+    print("Safe sequence:", ' -> '.join(f'P{i}' for i in safe_seq))
 else:
-    print("\nSystem is NOT in a safe state.")
+    print("System is in an unsafe state (deadlock possible).")
